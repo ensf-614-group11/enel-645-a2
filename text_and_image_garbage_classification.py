@@ -4,21 +4,32 @@ import torch.optim as optim
 from torchvision import datasets, transforms, models
 from torch.utils.data import DataLoader, Dataset
 import os
-from transformers import DistilBertModel, DistilBertTokenizer
-import matplotlib.pyplot as plt
-import numpy as np
-import os
 import re
-from sklearn.metrics import confusion_matrix
-import seaborn as sns
+import numpy as np
+from transformers import DistilBertModel, DistilBertTokenizer
+import wandb
 
-
-# Define data directories
-data_dir = "/content/drive/MyDrive/Colab Notebooks/ENEL 645/CVPR_2024_dataset_Subset" #UPDATE DIRECTORY
-# data_dir = r"C:\Users\rhysw\OneDrive\Documents\UofC Masters\Winter\ENEL 645\Assignments\A2" #UPDATE DIRECTORY
+# Define Data Directories
+data_dir = "C:/Users/Auste/Documents/ENEL645_GarbageData/"
 train_dir = os.path.join(data_dir, "CVPR_2024_dataset_Train")
 val_dir = os.path.join(data_dir, "CVPR_2024_dataset_Val")
 test_dir = os.path.join(data_dir, "CVPR_2024_dataset_Test")
+
+# Initialize wandb
+def initialize_wandb():
+    if wandb.run is None:
+        wandb.init(
+            entity="shcau-university-of-calgary-in-alberta",
+            project="transfer_learning_garbage",
+            name="Multimodal_Model_RTX4060_R3",
+            tags=["distilBERT", "efficientnet", "CVPR_2024_dataset"],
+            notes="Multimodal classification model using distilBERT and efficientnet.",
+            config={"epochs": 5, "batch_size": 128, "dataset": "CVPR_2024_dataset"},
+            job_type="train",
+            resume="allow",
+        )
+
+initialize_wandb()
 
 # Define transformations
 transform = {
@@ -32,113 +43,20 @@ transform = {
 }
 
 # Load datasets
-datasets = {
-    "train": datasets.ImageFolder(train_dir, transform=transform["train"]), #converts Image folder into PyTorch dataset
+image_datasets = {
+    "train": datasets.ImageFolder(train_dir, transform=transform["train"]),
     "val": datasets.ImageFolder(val_dir, transform=transform["val"]),
     "test": datasets.ImageFolder(test_dir, transform=transform["test"]),
 }
 
-# Define data loaders
-dataloaders = {
-    "train": DataLoader(datasets["train"], batch_size=128, shuffle=True, num_workers=4),
-    "val": DataLoader(datasets["val"], batch_size=128, shuffle=False, num_workers=4),
-    "test": DataLoader(datasets["test"], batch_size=128, shuffle=False, num_workers=4),
 
-}
-
-# Load the pre-trained EfficientNet_V2_S model with recommended weights
-model = models.efficientnet_v2_s(weights=models.EfficientNet_V2_S_Weights.IMAGENET1K_V1)
-
-# Freeze all layers except the last classifier
-for param in model.features.parameters():
-    param.requires_grad = False
-
-# Modify the classifier for 4-class classification
-num_features = model.classifier[1].in_features # input size for last fully connected layer
-model.classifier[1] = nn.Linear(num_features, 4) # output size of 4 classes
-
-# Move model to GPU if available
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model = model.to(device)
-
-# Define loss function and optimizer
-criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.classifier[1].parameters(), lr=0.001) # optimize parameters of classifier, not feature extraction layers
-
-# Training function
-def train_model(model, dataloaders, criterion, optimizer, num_epochs=10):
-    best_acc = 0.0
-    for epoch in range(num_epochs):
-        print(f"Epoch {epoch + 1}/{num_epochs}")
-        for phase in ["train", "val"]:
-            if phase == "train":
-                model.train()
-            else:
-                model.eval() # turns off layers not needed during prediction, like dropout layer
-
-            running_loss = 0.0
-            running_corrects = 0
-
-            for inputs, labels in dataloaders[phase]:
-                inputs, labels = inputs.to(device), labels.to(device)
-                optimizer.zero_grad()
-
-                with torch.set_grad_enabled(phase == "train"):
-                    outputs = model(inputs)
-                    loss = criterion(outputs, labels)
-                    _, preds = torch.max(outputs, 1)
-
-                    if phase == "train":
-                        loss.backward()
-                        optimizer.step()
-
-                running_loss += loss.item() * inputs.size(0)
-                running_corrects += torch.sum(preds == labels.data)
-
-            epoch_loss = running_loss / len(dataloaders[phase].dataset)
-            epoch_acc = running_corrects.double() / len(dataloaders[phase].dataset)
-
-            print(f"{phase} Loss: {epoch_loss:.4f} Acc: {epoch_acc:.4f}")
-
-            if phase == "val" and epoch_acc > best_acc:
-                best_acc = epoch_acc
-                torch.save(model.state_dict(), "best_model.pth")
-
-    print(f"Best val Acc: {best_acc:.4f}")
-    return model
-
-# Train the model
-model = train_model(model, dataloaders, criterion, optimizer, num_epochs=20)
-
-# Test function
-def test_model(model, dataloader):
-    model.load_state_dict(torch.load("best_model.pth"))
-    model.eval()
-    correct = 0
-    total = 0
-    with torch.no_grad():
-        for inputs, labels in dataloader:
-            inputs, labels = inputs.to(device), labels.to(device)
-            outputs = model(inputs)
-            _, preds = torch.max(outputs, 1) # use max function to get exact label
-            correct += torch.sum(preds == labels).item()
-            total += labels.size(0)
-    print(f"Test Accuracy: {100 * correct / total:.2f}%")
-
-# Evaluate the model on the test set
-test_model(model, dataloaders["test"])
-
-
-
-#Text Classification
-
-# Define functions
+# Text Classification
 
 # Extract text from file names as well as labels
 def read_text_files_with_labels(path):
     texts = []
     labels = []
-    class_folders = sorted(os.listdir(path))  # Assuming class folders are sorted
+    class_folders = sorted(os.listdir(path))
     label_map = {class_name: idx for idx, class_name in enumerate(class_folders)}
 
     for class_name in class_folders:
@@ -156,8 +74,7 @@ def read_text_files_with_labels(path):
 
     return np.array(texts), np.array(labels)
 
-# Define your dataset class
-class CustomDataset(Dataset):
+class CustomTextDataset(Dataset):
     def __init__(self, texts, labels, tokenizer, max_len):
         self.texts = texts
         self.labels = labels
@@ -178,139 +95,165 @@ class CustomDataset(Dataset):
             return_token_type_ids=False,
             padding='max_length',
             truncation=True,
-            return_attention_mask=True,
             return_tensors='pt'
         )
 
         return {
             'text': text,
             'input_ids': encoding['input_ids'].flatten(),
-            'attention_mask': encoding['attention_mask'].flatten(),
             'label': torch.tensor(label, dtype=torch.long)
         }
 
-# Define the model
-class DistilBERTClassifier(nn.Module):
-    def __init__(self, num_classes):
-        super(DistilBERTClassifier, self).__init__()
-        self.distilbert = DistilBertModel.from_pretrained('distilbert-base-uncased')
-        self.drop = nn.Dropout(0.3)
-        self.out = nn.Linear(self.distilbert.config.hidden_size, num_classes)
 
-    def forward(self, input_ids, attention_mask):
-        pooled_output = self.distilbert(input_ids=input_ids, attention_mask=attention_mask)[0]
-        output = self.drop(pooled_output[:,0])
-        return self.out(output)
-
-# Define training function
-def train(model, iterator, optimizer, criterion, device):
-    model.train()
-    total_loss = 0
-    for batch in iterator:
-        input_ids = batch['input_ids'].to(device)
-        attention_mask = batch['attention_mask'].to(device)
-        labels = batch['label'].to(device)
-
-        optimizer.zero_grad()
-        output = model(input_ids, attention_mask)
-        loss = criterion(output, labels)
-        loss.backward()
-        optimizer.step()
-
-        total_loss += loss.item()
-
-    return total_loss / len(iterator)
-
-# Define evaluation function
-def evaluate(model, iterator, criterion, device):
-    model.eval() # set model to evaluation model
-    total_loss = 0
-    with torch.no_grad(): # don't need dropout to be active so we disable gradients
-        for batch in iterator:
-            input_ids = batch['input_ids'].to(device)
-            attention_mask = batch['attention_mask'].to(device)
-            labels = batch['label'].to(device)
-
-            output = model(input_ids, attention_mask)
-            loss = criterion(output, labels)
-
-            total_loss += loss.item()
-
-    return total_loss / len(iterator)
-
-# Define prediction function
-def predict(model, dataloader, device):
-    model.eval()  # Set the model to evaluation mode
-    predictions = []
-    with torch.no_grad():  # Disable gradient tracking
-        for batch in dataloader:
-            input_ids = batch['input_ids'].to(device)  # Assuming input_ids are in the batch
-            attention_mask = batch['attention_mask'].to(device)  # Assuming attention_mask is in the batch
-
-            # Forward pass
-            outputs = model(input_ids, attention_mask)
-
-            # Get predictions
-            _, preds = torch.max(outputs, dim=1)
-
-            # Convert predictions to CPU and append to the list
-            predictions.extend(preds.cpu().numpy())
-
-    return predictions
-
-# Use the paths for the data from the image classification
+# Prepare text data
 
 text_train,labels_train = read_text_files_with_labels(train_dir)
 text_val,labels_val = read_text_files_with_labels(val_dir)
 text_test,labels_test = read_text_files_with_labels(test_dir)
 
-# Tokenizer
 tokenizer = DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
-
-# Tokenize data
 max_len = 24
-dataset_train = CustomDataset(text_train, labels_train, tokenizer, max_len)
-dataset_val = CustomDataset(text_val, labels_val, tokenizer, max_len)
-dataset_test = CustomDataset(text_test, labels_test, tokenizer, max_len)
 
-# Data loaders
-train_loader = DataLoader(dataset_train, batch_size=128, shuffle=True)
-val_loader = DataLoader(dataset_val, batch_size=128, shuffle=False)
-test_loader = DataLoader(dataset_test, batch_size=128, shuffle=False)
+#Define number of epochs
+EPOCHS = 5
 
-best_loss = 1e+10 # best loss tracker
-EPOCHS = 4
 
-# Model
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-text_model = DistilBERTClassifier(num_classes=4).to(device)
+class MultimodalDataset(Dataset):
+    def __init__(self, image_dataset, text_dataset):
+        self.image_dataset = image_dataset
+        self.text_dataset = text_dataset
 
-# Training parameters
-optimizer = optim.Adam(text_model.parameters(), lr=0.0001)
+    def __len__(self):
+        return min(len(self.image_dataset), len(self.text_dataset))
+
+    def __getitem__(self, idx):
+        image, label = self.image_dataset[idx]
+        text_data = self.text_dataset[idx]
+        return {
+            "image": image,
+            "input_ids": text_data["input_ids"],
+            "label": label
+        }
+    
+
+class MultimodalClassifier(nn.Module):
+    def __init__(self, num_classes):
+        super(MultimodalClassifier, self).__init__()
+
+        # EfficientNet (Image)
+        self.image_model = models.efficientnet_v2_s(weights=models.EfficientNet_V2_S_Weights.IMAGENET1K_V1)
+
+        # Freeze feature layers
+        for param in self.image_model.features.parameters():
+            param.requires_grad = False
+
+        num_ftrs = self.image_model.classifier[1].in_features
+
+        #Remove EfficientNet classifier
+        self.image_model.classifier = nn.Identity()
+
+        #Project features to 256 nodes
+        self.image_fc = nn.Linear(num_ftrs, 256)
+
+        # DistilBERT (Text)
+        self.text_model = DistilBertModel.from_pretrained('distilbert-base-uncased')
+        self.text_fc = nn.Linear(self.text_model.config.hidden_size, 256)
+
+        # Normalization layers
+        self.text_norms = nn.LayerNorm(256)
+        self.image_norm = nn.LayerNorm(256)
+
+        # Feature fusion Layer (Concatenation)
+        self.fusion_fc = nn.Linear(512, self.text_model.config.hidden_size)
+
+        # Classification Layer
+        self.classifier = nn.Linear(self.text_model.config.hidden_size, num_classes)
+        self.dropout = nn.Dropout(0.3)
+        
+    def forward(self, input_ids, image_inputs):
+        # Extract features
+        text_output = self.text_model(input_ids=input_ids)
+        text_features = self.text_norms(self.text_fc(text_output.last_hidden_state[:, 0, :]))  # Use CLS token
+        image_features = self.image_norm(self.image_fc(self.image_model(image_inputs)))
+
+        # Concatenate text and image features
+        combined_features = torch.cat((text_features, image_features), dim=1)
+
+        combined_features = self.fusion_fc(combined_features)
+        output = self.classifier(self.dropout(combined_features))
+
+        return output
+    
+# Data Loaders
+BATCH_SIZE = 128
+train_loader = DataLoader(MultimodalDataset(image_datasets["train"], CustomTextDataset(text_train, labels_train, tokenizer, max_len)), batch_size=BATCH_SIZE, shuffle=True)
+val_loader = DataLoader(MultimodalDataset(image_datasets["val"], CustomTextDataset(text_val, labels_val, tokenizer, max_len)), batch_size=BATCH_SIZE, shuffle=False)
+test_loader = DataLoader(MultimodalDataset(image_datasets["test"], CustomTextDataset(text_test, labels_test, tokenizer, max_len)), batch_size=BATCH_SIZE, shuffle=False)
+
+# Evaluation Function
+def evaluate_model(model, dataloader, device):
+    model.eval()
+    total_loss = 0
+    correct, total = 0, 0
+    criterion = nn.CrossEntropyLoss()
+
+    with torch.no_grad():
+        for batch in dataloader:
+            images = batch["image"].to(device)
+            input_ids = batch["input_ids"].to(device)
+            labels = batch["label"].to(device)
+
+            outputs = model(input_ids, images)
+
+            loss = criterion(outputs, labels)
+            total_loss += loss.item()
+
+            correct += (outputs.argmax(1) == labels).sum().item()
+            total += labels.size(0)
+
+    accuracy = correct / total
+    return total_loss / len(dataloader), accuracy
+        
+# Model Setup
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model = MultimodalClassifier(num_classes=4).to(device)
+optimizer = optim.Adam([
+    {'params': model.text_model.parameters(), 'lr': 0.0001},  
+    {'params': model.image_fc.parameters(), 'lr': 0.001},  
+    {'params': model.classifier.parameters(), 'lr': 0.001}
+])
 criterion = nn.CrossEntropyLoss()
 
-# Training loop
+wandb.watch(model, log="all")
+best_val_loss = float("inf")
+
+# Training
 for epoch in range(EPOCHS):
-    train_loss = train(text_model, train_loader, optimizer, criterion, device)
-    print(f'Epoch: {epoch+1}, Train Loss: {train_loss:.4f}')
-    val_loss = evaluate(text_model, val_loader, criterion, device)
-    print(f'Epoch: {epoch+1}, Val Loss: {val_loss:.4f}')
-    if val_loss < best_loss:
-        best_loss = val_loss
-        torch.save(text_model.state_dict(), 'best_model.pth')
+    model.train()
+    total_train_loss = 0
+    for batch in train_loader:
+        images = batch["image"].to(device)
+        input_ids = batch["input_ids"].to(device)
+        labels = batch["label"].to(device)
+        optimizer.zero_grad()
+        outputs = model(input_ids, images)
+        loss = criterion(outputs, labels)
+        loss.backward()
+        optimizer.step()
+        total_train_loss += loss.item()
 
-text_model.load_state_dict(torch.load('best_model.pth'))
-# Evaluation
-test_predictions = predict(text_model, test_loader, device)
-print(f"Accuracy:  {(test_predictions == labels_test).sum()/labels_test.size:.4f}")
+    val_loss, val_acc = evaluate_model(model, val_loader, device)
+    
+    if val_loss < best_val_loss:
+        best_val_loss = val_loss
+        torch.save(model.state_dict(), "best_multimodal_model.pth")
 
-cm = confusion_matrix(labels_test, test_predictions)
+    wandb.log({"epoch": epoch+1, "train_loss": total_train_loss, "val_loss": val_loss, "val_accuracy": val_acc})
+    print(f"Epoch {epoch+1}/{5}, Train Loss: {total_train_loss:.4f}, Val Loss: {val_loss:.4f}, Val Acc: {val_acc:.4f}")
 
-# Plot confusion matrix
-plt.figure(figsize=(8, 6))
-sns.heatmap(cm, annot=True, cmap='Blues', fmt='g', cbar=False)
-
-plt.title('Confusion Matrix')
-plt.xlabel('Predicted Labels')
-plt.ylabel('True Labels')
-plt.show()
+# Load Best Model for Testing
+model.load_state_dict(torch.load("best_multimodal_model.pth"))
+test_loss, test_acc = evaluate_model(model, test_loader, device)
+wandb.log({"test_accuracy": test_acc})
+print(f"Test Loss: {test_loss:.4f}, Test Accuracy: {test_acc:.4f}")
+wandb.finish()
