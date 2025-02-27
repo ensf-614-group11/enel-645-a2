@@ -1,0 +1,56 @@
+
+Starting Epoch 1/50
+Epoch 1/50, Train Loss: 35.7723, Val Loss: 0.2293, Val Acc: 0.9256
+
+Starting Epoch 2/50
+Epoch 2/50, Train Loss: 15.7638, Val Loss: 0.2610, Val Acc: 0.9161
+
+Starting Epoch 3/50
+Epoch 3/50, Train Loss: 11.4553, Val Loss: 0.2422, Val Acc: 0.9233
+
+Starting Epoch 4/50
+Epoch 4/50, Train Loss: 8.8374, Val Loss: 0.2433, Val Acc: 0.9267
+
+Starting Epoch 5/50
+Epoch 5/50, Train Loss: 7.3947, Val Loss: 0.2473, Val Acc: 0.9244
+
+Starting Epoch 6/50
+Epoch 6/50, Train Loss: 6.4963, Val Loss: 0.2847, Val Acc: 0.9211
+Early stopping at epoch 6 as validation loss did not improve for 5 epochs.
+
+Starting Epoch 1/50
+Epoch 1/50, Train Loss: 34.2097, Val Loss: 0.2374, Val Acc: 0.9178
+
+Starting Epoch 2/50
+Epoch 2/50, Train Loss: 15.5613, Val Loss: 0.2079, Val Acc: 0.9239
+
+Starting Epoch 3/50
+Epoch 3/50, Train Loss: 11.3504, Val Loss: 0.2425, Val Acc: 0.9244
+
+Starting Epoch 4/50
+Epoch 4/50, Train Loss: 8.7778, Val Loss: 0.2584, Val Acc: 0.9228
+
+Starting Epoch 5/50
+Epoch 5/50, Train Loss: 7.0171, Val Loss: 0.2739, Val Acc: 0.9172
+
+Starting Epoch 6/50
+Epoch 6/50, Train Loss: 5.8553, Val Loss: 0.2905, Val Acc: 0.9194
+
+Starting Epoch 7/50
+Epoch 7/50, Train Loss: 4.6806, Val Loss: 0.3191, Val Acc: 0.9206
+
+Starting Epoch 8/50
+Epoch 8/50, Train Loss: 5.8140, Val Loss: 0.2765, Val Acc: 0.9250
+
+Starting Epoch 9/50
+Epoch 9/50, Train Loss: 4.5971, Val Loss: 0.2723, Val Acc: 0.9300
+
+Starting Epoch 10/50
+Epoch 10/50, Train Loss: 3.5919, Val Loss: 0.3013, Val Acc: 0.9217
+
+Starting Epoch 11/50
+Epoch 11/50, Train Loss: 3.3683, Val Loss: 0.3187, Val Acc: 0.9261
+
+Starting Epoch 12/50
+Epoch 12/50, Train Loss: 3.3281, Val Loss: 0.3002, Val Acc: 0.9267
+Early stopping at epoch 12 as validation loss did not improve for 10 epochs.

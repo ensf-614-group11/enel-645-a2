@@ -1,0 +1,18 @@
+{"time":"2025-02-27T01:02:31.1890564-07:00","level":"INFO","msg":"stream: starting","core version":"0.19.6","symlink path":"c:\\Users\\arkzs\\AppData\\GitHub Projects\\enel-645-a2\\wandb\\run-20250227_010230-6gj5nhoc\\logs\\debug-core.log"}
+{"time":"2025-02-27T01:02:31.3000892-07:00","level":"INFO","msg":"created new stream","id":"6gj5nhoc"}
+{"time":"2025-02-27T01:02:31.3000892-07:00","level":"INFO","msg":"stream: started","id":"6gj5nhoc"}
+{"time":"2025-02-27T01:02:31.3000892-07:00","level":"INFO","msg":"writer: Do: started","stream_id":"6gj5nhoc"}
+{"time":"2025-02-27T01:02:31.3000892-07:00","level":"INFO","msg":"handler: started","stream_id":"6gj5nhoc"}
+{"time":"2025-02-27T01:02:31.3000892-07:00","level":"INFO","msg":"sender: started","stream_id":"6gj5nhoc"}
+{"time":"2025-02-27T01:02:31.7687213-07:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-02-27T02:34:42.4499308-07:00","level":"INFO","msg":"Pausing system monitor"}
+{"time":"2025-02-27T02:34:42.48891-07:00","level":"INFO","msg":"Resuming system monitor"}
+{"time":"2025-02-27T02:36:34.7340299-07:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-02-27T02:36:34.7357298-07:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-02-27T02:36:35.5818127-07:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-02-27T02:36:35.7472349-07:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading history steps 13-13, summary, console lines 42-42","runtime_seconds":0.1627492}],"total_operations":1}}
+{"time":"2025-02-27T02:36:37.1174463-07:00","level":"INFO","msg":"stream: closing","id":"6gj5nhoc"}
+{"time":"2025-02-27T02:36:37.1174463-07:00","level":"INFO","msg":"handler: closed","stream_id":"6gj5nhoc"}
+{"time":"2025-02-27T02:36:37.1174463-07:00","level":"INFO","msg":"writer: Close: closed","stream_id":"6gj5nhoc"}
+{"time":"2025-02-27T02:36:37.1174463-07:00","level":"INFO","msg":"sender: closed","stream_id":"6gj5nhoc"}
+{"time":"2025-02-27T02:36:37.1174463-07:00","level":"INFO","msg":"stream: closed","id":"6gj5nhoc"}

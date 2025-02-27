@@ -1,0 +1,8 @@
+{"time":"2025-02-26T21:09:47.3380825-07:00","level":"INFO","msg":"stream: starting","core version":"0.19.6","symlink path":"c:\\Users\\arkzs\\AppData\\GitHub Projects\\enel-645-a2\\wandb\\run-20250226_210947-qv2pc30z\\logs\\debug-core.log"}
+{"time":"2025-02-26T21:09:47.4494955-07:00","level":"INFO","msg":"created new stream","id":"qv2pc30z"}
+{"time":"2025-02-26T21:09:47.4494955-07:00","level":"INFO","msg":"stream: started","id":"qv2pc30z"}
+{"time":"2025-02-26T21:09:47.4494955-07:00","level":"INFO","msg":"handler: started","stream_id":"qv2pc30z"}
+{"time":"2025-02-26T21:09:47.4494955-07:00","level":"INFO","msg":"writer: Do: started","stream_id":"qv2pc30z"}
+{"time":"2025-02-26T21:09:47.4494955-07:00","level":"INFO","msg":"sender: started","stream_id":"qv2pc30z"}
+{"time":"2025-02-26T21:09:47.8206995-07:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-02-26T21:09:54.2132296-07:00","level":"INFO","msg":"Pausing system monitor"}
