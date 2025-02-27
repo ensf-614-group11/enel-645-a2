@@ -1,0 +1,9 @@
+{"time":"2025-02-26T21:14:29.3422882-07:00","level":"INFO","msg":"stream: starting","core version":"0.19.6","symlink path":"c:\\Users\\arkzs\\AppData\\GitHub Projects\\enel-645-a2\\wandb\\run-20250226_211429-7cf1y588\\logs\\debug-core.log"}
+{"time":"2025-02-26T21:14:29.452621-07:00","level":"INFO","msg":"created new stream","id":"7cf1y588"}
+{"time":"2025-02-26T21:14:29.452621-07:00","level":"INFO","msg":"stream: started","id":"7cf1y588"}
+{"time":"2025-02-26T21:14:29.452621-07:00","level":"INFO","msg":"handler: started","stream_id":"7cf1y588"}
+{"time":"2025-02-26T21:14:29.452621-07:00","level":"INFO","msg":"writer: Do: started","stream_id":"7cf1y588"}
+{"time":"2025-02-26T21:14:29.452621-07:00","level":"INFO","msg":"sender: started","stream_id":"7cf1y588"}
+{"time":"2025-02-26T21:14:30.1824007-07:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-02-26T21:14:36.1606922-07:00","level":"INFO","msg":"Pausing system monitor"}
+{"time":"2025-02-26T21:15:40.9141684-07:00","level":"INFO","msg":"Resuming system monitor"}
