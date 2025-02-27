@@ -1,0 +1,42 @@
+{
+  "os": "Windows-10-10.0.26100-SP0",
+  "python": "CPython 3.11.11",
+  "startedAt": "2025-02-27T04:14:29.341250Z",
+  "program": "c:\\Users\\arkzs\\AppData\\GitHub Projects\\enel-645-a2\\assignment2_group11_r2.ipynb",
+  "codePath": "assignment2_group11_r2.ipynb",
+  "git": {
+    "remote": "https://github.com/ensf-614-group11/enel-645-a2.git",
+    "commit": "1570a14fc4aa3d133fad7990fc70135170227bab"
+  },
+  "email": "shcau@pm.me",
+  "root": "c:\\Users\\arkzs\\AppData\\GitHub Projects\\enel-645-a2",
+  "host": "HanHOME",
+  "executable": "c:\\Users\\arkzs\\miniforge3\\envs\\enel645_torch_env\\python.exe",
+  "codePathLocal": "assignment2_group11_r2.ipynb",
+  "cpu_count": 12,
+  "cpu_count_logical": 24,
+  "gpu": "NVIDIA GeForce RTX 3080",
+  "gpu_count": 1,
+  "disk": {
+    "/": {
+      "total": "999275098112",
+      "used": "577419169792"
+    }
+  },
+  "memory": {
+    "total": "34281414656"
+  },
+  "cpu": {
+    "count": 12,
+    "countLogical": 24
+  },
+  "gpu_nvidia": [
+    {
+      "name": "NVIDIA GeForce RTX 3080",
+      "memoryTotal": "10737418240",
+      "cudaCores": 8704,
+      "architecture": "Ampere"
+    }
+  ],
+  "cudaVersion": "12.8"
+}
