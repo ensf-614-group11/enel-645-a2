@@ -1,0 +1,8 @@
+{"time":"2025-02-27T23:03:43.2771673-07:00","level":"INFO","msg":"stream: starting","core version":"0.19.7","symlink path":"c:\\Users\\Auste\\OneDrive\\Documents\\ENEL645\\enel645_assignment2\\enel-645-a2\\wandb\\run-20250227_230343-gxjjqqwy\\logs\\debug-core.log"}
+{"time":"2025-02-27T23:03:43.5114509-07:00","level":"INFO","msg":"created new stream","id":"gxjjqqwy"}
+{"time":"2025-02-27T23:03:43.5114509-07:00","level":"INFO","msg":"writer: Do: started","stream_id":"gxjjqqwy"}
+{"time":"2025-02-27T23:03:43.5114509-07:00","level":"INFO","msg":"handler: started","stream_id":"gxjjqqwy"}
+{"time":"2025-02-27T23:03:43.5116482-07:00","level":"INFO","msg":"stream: started","id":"gxjjqqwy"}
+{"time":"2025-02-27T23:03:43.5116482-07:00","level":"INFO","msg":"sender: started","stream_id":"gxjjqqwy"}
+{"time":"2025-02-27T23:03:44.0073102-07:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-02-27T23:59:19.3273334-07:00","level":"INFO","msg":"Pausing system monitor"}
